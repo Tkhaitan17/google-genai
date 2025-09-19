@@ -314,23 +314,57 @@
     
     <!-- Firebase Initialization -->
     <script>
-        // Initialize Firebase with configuration from config.js
+        // Initialize Firebase with configuration from config.js or environment variables
         let firebaseApp, firebaseAuth, firebaseStorage, firebaseDB;
         
         try {
-            if (typeof firebase !== 'undefined' && window.CONFIG && window.CONFIG.FIREBASE) {
-                firebaseApp = firebase.initializeApp(window.CONFIG.FIREBASE);
-                firebaseAuth = firebase.auth();
-                firebaseStorage = firebase.storage();
-                firebaseDB = firebase.firestore();
+            if (typeof firebase !== 'undefined') {
+                // Try to get Firebase config from different sources
+                let firebaseConfig = null;
                 
-                // Export for use in other files
-                window.firebaseApp = firebaseApp;
-                window.firebaseAuth = firebaseAuth;
-                window.firebaseStorage = firebaseStorage;
-                window.firebaseDB = firebaseDB;
+                // First try: window.CONFIG (local development)
+                if (window.CONFIG && window.CONFIG.FIREBASE) {
+                    firebaseConfig = window.CONFIG.FIREBASE;
+                }
+                // Second try: Environment variables (production)
+                else if (typeof process !== 'undefined' && process.env) {
+                    firebaseConfig = {
+                        apiKey: process.env.FIREBASE_API_KEY,
+                        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+                        projectId: process.env.FIREBASE_PROJECT_ID,
+                        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+                        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+                        appId: process.env.FIREBASE_APP_ID
+                    };
+                }
+                // Third try: Hardcoded config (fallback)
+                else {
+                    firebaseConfig = {
+                        apiKey: "AIzaSyC0jsMw-eaxauMYLvjdzn-mc0_vUPzwnOo",
+                        authDomain: "legallens-ai-a2e96.firebaseapp.com",
+                        projectId: "legallens-ai-a2e96",
+                        storageBucket: "legallens-ai-a2e96.firebasestorage.app",
+                        messagingSenderId: "1076383855534",
+                        appId: "1:1076383855534:web:c41f79be9c262536c54e3f"
+                    };
+                }
                 
-                console.log('Firebase initialized successfully');
+                if (firebaseConfig && firebaseConfig.apiKey) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    firebaseAuth = firebase.auth();
+                    firebaseStorage = firebase.storage();
+                    firebaseDB = firebase.firestore();
+                    
+                    // Export for use in other files
+                    window.firebaseApp = firebaseApp;
+                    window.firebaseAuth = firebaseAuth;
+                    window.firebaseStorage = firebaseStorage;
+                    window.firebaseDB = firebaseDB;
+                    
+                    console.log('Firebase initialized successfully');
+                } else {
+                    console.log('Firebase configuration not found - running in demo mode');
+                }
             } else {
                 console.log('Firebase not loaded - running in demo mode');
             }

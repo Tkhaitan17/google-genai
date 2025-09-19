@@ -1,9 +1,15 @@
-// API Configuration - Load from config.js
+// API Configuration - Load from config.js or environment variables
 const GEMINI_API_URL = window.CONFIG?.GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // Make API key available globally for backward compatibility
 if (window.CONFIG?.GEMINI_API_KEY) {
     window.GEMINI_API_KEY = window.CONFIG.GEMINI_API_KEY;
+} else if (typeof process !== 'undefined' && process.env && process.env.GEMINI_API_KEY) {
+    // For production environment variables
+    window.GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+} else {
+    // Fallback - you can set this directly for production
+    window.GEMINI_API_KEY = 'AIzaSyCLWImqAa5u-7wqpwheMEaXf2rRAyfzHpw';
 }
 
 // Global variables
