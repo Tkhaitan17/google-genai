@@ -1,5 +1,10 @@
-// API Configuration
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+// API Configuration - Load from config.js
+const GEMINI_API_URL = window.CONFIG?.GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+// Make API key available globally for backward compatibility
+if (window.CONFIG?.GEMINI_API_KEY) {
+    window.GEMINI_API_KEY = window.CONFIG.GEMINI_API_KEY;
+}
 
 // Global variables
 let currentDocument = null;
@@ -177,10 +182,59 @@ async function handleDocumentUpload() {
     }
     
     console.log('File selected:', file.name);
-    console.log('API Key available:', !!window.GEMINI_API_KEY);
+    console.log('API Key available:', !!(window.CONFIG?.GEMINI_API_KEY || window.GEMINI_API_KEY));
+    
+    // Show privacy notice first
+    const privacyAccepted = await new Promise((resolve) => {
+        const privacyNotice = `
+            <div class="privacy-modal">
+                <div class="privacy-notice">
+                    <div class="privacy-content">
+                        <h3>🔒 Privacy & Security Notice</h3>
+                        <div class="privacy-details">
+                            <p><strong>Data Processing:</strong> Your document will be processed by Google's Gemini AI for analysis purposes only.</p>
+                            <p><strong>Data Retention:</strong> Documents are processed in real-time and not permanently stored by our service.</p>
+                            <p><strong>Security:</strong> All data transmission is encrypted using HTTPS.</p>
+                            <p><strong>Your Rights:</strong> You can request data deletion at any time.</p>
+                        </div>
+                        <div class="privacy-actions">
+                            <button id="accept-privacy" class="privacy-btn accept">I Understand & Accept</button>
+                            <button id="decline-privacy" class="privacy-btn decline">Cancel Upload</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const modal = document.createElement('div');
+        modal.innerHTML = privacyNotice;
+        document.body.appendChild(modal);
+        
+        document.getElementById('accept-privacy').addEventListener('click', () => {
+            document.body.removeChild(modal);
+            resolve(true);
+        });
+        
+        document.getElementById('decline-privacy').addEventListener('click', () => {
+            document.body.removeChild(modal);
+            resolve(false);
+        });
+    });
+    
+    if (!privacyAccepted) {
+        return;
+    }
     
     isUploading = true;
-    showLoading(true);
+    
+    // Show upload confirmation first
+    showUploadConfirmation(file);
+    
+    // Small delay to show upload confirmation
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Show document type detection loading
+    showDocumentTypeDetection();
     
     try {
         // Convert PDF to base64
@@ -191,9 +245,211 @@ async function handleDocumentUpload() {
         // Store current document for comparison
         currentDocument = base64;
         
-        // Analyze document with Gemini
-        console.log('Sending to Gemini API...');
-        const analysis = await analyzeDocumentWithGemini(base64);
+        // Detect document type and language
+        console.log('Detecting document type and language...');
+        const detectionResult = await detectDocumentType(base64);
+        console.log('Detection result:', detectionResult);
+        
+        // Show document type confirmation
+        showDocumentTypeConfirmation(detectionResult, base64);
+        
+    } catch (error) {
+        console.error('Error detecting document type:', error);
+        alert('Error detecting document type: ' + error.message);
+        isUploading = false;
+        showLoading(false);
+    }
+}
+
+// Convert file to base64
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+    });
+}
+
+// Security and Privacy Notice
+function showPrivacyNotice() {
+    const privacyNotice = `
+        <div class="privacy-notice">
+            <div class="privacy-content">
+                <h3>🔒 Privacy & Security Notice</h3>
+                <div class="privacy-details">
+                    <p><strong>Data Processing:</strong> Your document will be processed by Google's Gemini AI for analysis purposes only.</p>
+                    <p><strong>Data Retention:</strong> Documents are processed in real-time and not permanently stored by our service.</p>
+                    <p><strong>Security:</strong> All data transmission is encrypted using HTTPS.</p>
+                    <p><strong>Your Rights:</strong> You can request data deletion at any time.</p>
+                </div>
+                <div class="privacy-actions">
+                    <button id="accept-privacy" class="privacy-btn accept">I Understand & Accept</button>
+                    <button id="decline-privacy" class="privacy-btn decline">Cancel Upload</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Show privacy notice as modal
+    const modal = document.createElement('div');
+    modal.className = 'privacy-modal';
+    modal.innerHTML = privacyNotice;
+    document.body.appendChild(modal);
+    
+    // Handle privacy acceptance
+    document.getElementById('accept-privacy').addEventListener('click', () => {
+        document.body.removeChild(modal);
+        return true;
+    });
+    
+    // Handle privacy decline
+    document.getElementById('decline-privacy').addEventListener('click', () => {
+        document.body.removeChild(modal);
+        return false;
+    });
+}
+
+// Document type detection with language support
+async function detectDocumentType(base64Data) {
+    const detectionPrompt = `
+        Analyze this document and determine:
+        1. Document language (English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, Hindi, or Other)
+        2. Document type from these categories:
+           - Rental/Housing Documents (lease agreements, rental contracts)
+           - Loan and Credit Agreements (loans, credit cards, financing)
+           - Employment Documents (employment contracts, NDAs, non-compete agreements)
+           - Terms of Service/Privacy Policies (website terms, privacy policies)
+           - Insurance Policies (health, auto, home, life insurance)
+           - General Legal Document (if none of the above match)
+        
+        Respond in this exact format:
+        LANGUAGE: [detected language]
+        TYPE: [document type]
+        
+        Be specific and accurate in your classification.
+    `;
+
+    try {
+        const apiKey = window.CONFIG?.GEMINI_API_KEY || window.GEMINI_API_KEY;
+        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [
+                        { text: detectionPrompt },
+                        { 
+                            inline_data: {
+                                mime_type: "application/pdf",
+                                data: base64Data
+                            }
+                        }
+                    ]
+                }]
+            })
+        });
+
+        const data = await response.json();
+        const responseText = data.candidates[0].content.parts[0].text.trim();
+        
+        // Parse language and type
+        const languageMatch = responseText.match(/LANGUAGE:\s*(.+)/i);
+        const typeMatch = responseText.match(/TYPE:\s*(.+)/i);
+        
+        const detectedLanguage = languageMatch ? languageMatch[1].trim() : 'English';
+        const detectedType = typeMatch ? typeMatch[1].trim() : 'General Legal Document';
+        
+        console.log('Detected language:', detectedLanguage);
+        console.log('Detected document type:', detectedType);
+        
+        return {
+            type: detectedType,
+            language: detectedLanguage
+        };
+    } catch (error) {
+        console.error('Error detecting document type:', error);
+        return {
+            type: 'General Legal Document',
+            language: 'English'
+        };
+    }
+}
+
+// Get specific prompt based on document type
+function getDocumentSpecificPrompt(documentType) {
+    const prompts = {
+        'Rental/Housing Documents': `
+            You are analyzing a RENTAL/LEASE AGREEMENT. Focus on:
+            1. RENT TERMS: Monthly amount, due dates, late fees, grace periods
+            2. SECURITY DEPOSIT: Amount, return conditions, allowable deductions  
+            3. TERMINATION: Notice requirements, penalties, 120-day transition periods
+            4. RESTRICTIONS: Pet policies, subletting rules, noise ordinances
+            5. MAINTENANCE: Who pays utilities, repair responsibilities, property modifications
+            6. RED FLAGS: Excessive fees, unreasonable restrictions, unfair termination clauses
+            
+            Rate risk focusing on: tenant rights violations, excessive financial obligations, predatory clauses.
+        `,
+        'Loan and Credit Agreements': `
+            You are analyzing a LOAN/CREDIT AGREEMENT. Focus on:
+            1. INTEREST RATES: APR, variable vs. fixed, rate change conditions
+            2. PAYMENT TERMS: Monthly amounts, due dates, grace periods, late fees  
+            3. FEES: Origination, processing, prepayment penalties, annual fees
+            4. DEFAULT: Conditions triggering default, acceleration clauses, consequences
+            5. INSURANCE: Required coverage, premium costs, beneficiaries
+            6. RED FLAGS: Predatory lending practices, excessive fees, confusing terms
+            
+            Rate risk focusing on: debt trap potential, hidden costs, unfair collection practices.
+        `,
+        'Employment Documents': `
+            You are analyzing an EMPLOYMENT DOCUMENT. Focus on:
+            1. COMPENSATION: Base salary, bonuses, benefits, equity, expense reimbursement
+            2. RESPONSIBILITIES: Job duties, reporting structure, performance metrics
+            3. CONFIDENTIALITY: NDA scope, trade secrets, duration of obligations
+            4. TERMINATION: Notice periods, severance, return of company property
+            5. RESTRICTIONS: Non-compete geography/duration, non-solicitation clauses
+            6. RED FLAGS: Overly broad restrictions, unpaid obligations, unfair termination
+            
+            Rate risk focusing on: career mobility limitations, unfair compensation, excessive obligations.
+        `,
+        'Terms of Service/Privacy Policies': `
+            You are analyzing a TERMS OF SERVICE or PRIVACY POLICY. Focus on:
+            1. DATA PRIVACY: Collection practices, sharing with third parties, user rights
+            2. SERVICE TERMS: Availability, feature changes, account suspension/termination  
+            3. USER OBLIGATIONS: Acceptable use, prohibited activities, content guidelines
+            4. LIABILITY: Limitation of damages, indemnification, warranty disclaimers
+            5. DISPUTE RESOLUTION: Arbitration requirements, class action waivers, governing law
+            6. RED FLAGS: Excessive data collection, unfair termination, binding arbitration abuse
+            
+            Rate risk focusing on: privacy violations, loss of legal rights, service dependency.
+        `,
+        'Insurance Policies': `
+            You are analyzing an INSURANCE POLICY. Focus on:
+            1. COVERAGE: What's included/excluded, benefit limits, geographic scope
+            2. COSTS: Premiums, deductibles, co-pays, out-of-pocket maximums
+            3. CLAIMS: Filing requirements, documentation needed, processing timelines
+            4. EXCLUSIONS: Pre-existing conditions, high-risk activities, coverage gaps  
+            5. RENEWAL: Rate changes, policy modifications, cancellation rights
+            6. RED FLAGS: Hidden exclusions, excessive costs, claim denial patterns
+            
+            Rate risk focusing on: coverage gaps, claim denial risks, affordability issues.
+        `
+    };
+
+    return prompts[documentType] || '';
+}
+
+// Proceed with analysis after document type confirmation
+async function proceedWithAnalysis(documentType, language, base64Data) {
+    // Show analysis loading
+    showLoading(true);
+    
+    try {
+        // Analyze document with confirmed type and language
+        console.log('Proceeding with analysis for document type:', documentType, 'language:', language);
+        const analysis = await analyzeDocumentWithGeminiWithType(base64Data, documentType, language);
         console.log('Analysis complete:', analysis);
         
         // Display results
@@ -211,20 +467,45 @@ async function handleDocumentUpload() {
     }
 }
 
-// Convert file to base64
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = error => reject(error);
-    });
+// Reject document type and try again
+async function rejectDocumentType() {
+    if (!currentDocument) {
+        alert('No document available to re-analyze');
+        return;
+    }
+    
+    // Show detection loading again
+    showDocumentTypeDetection();
+    
+    try {
+        // Try detecting document type again
+        console.log('Re-detecting document type...');
+        const documentType = await detectDocumentType(currentDocument);
+        console.log('Document type re-detected:', documentType);
+        
+        // Show confirmation again
+        showDocumentTypeConfirmation(documentType, currentDocument);
+        
+    } catch (error) {
+        console.error('Error re-detecting document type:', error);
+        alert('Error re-detecting document type: ' + error.message);
+        isUploading = false;
+        showLoading(false);
+    }
 }
 
-// Analyze document with Gemini API
-async function analyzeDocumentWithGemini(base64Data) {
-    const prompt = `
-        You are a legal document analysis AI. Analyze this document and provide a clear, well-formatted response.
+// Analyze document with Gemini API using specific document type and language
+async function analyzeDocumentWithGeminiWithType(base64Data, documentType, language = 'English') {
+    // Get specific prompt for document type
+    const specificPrompt = getDocumentSpecificPrompt(documentType);
+    
+    // Create language-specific instructions
+    const languageInstruction = language !== 'English' ? 
+        `\n\nIMPORTANT: The document is in ${language}. Please provide your analysis in ${language} while maintaining the same format and structure.` : '';
+    
+    // Create the main analysis prompt
+    const basePrompt = `
+        You are a legal document analysis AI. ${specificPrompt}
         
         Please provide your analysis in the following format:
         
@@ -239,7 +520,7 @@ async function analyzeDocumentWithGemini(base64Data) {
         RED FLAGS:
         • [List any predatory or unusual terms, each on a new line with bullet points. If none, write "No major red flags detected."]
         
-        IMPORTANT: Do not use JSON format. Provide clean, readable text with proper formatting.
+        IMPORTANT: Do not use JSON format. Provide clean, readable text with proper formatting.${languageInstruction}
     `;
 
     const response = await fetch(`${GEMINI_API_URL}?key=${window.GEMINI_API_KEY}`, {
@@ -250,7 +531,7 @@ async function analyzeDocumentWithGemini(base64Data) {
         body: JSON.stringify({
             contents: [{
                 parts: [
-                    { text: prompt },
+                    { text: basePrompt },
                     { 
                         inline_data: {
                             mime_type: "application/pdf",
@@ -265,8 +546,20 @@ async function analyzeDocumentWithGemini(base64Data) {
     const data = await response.json();
     const analysisText = data.candidates[0].content.parts[0].text;
     
-    // Parse the formatted text response
-    return parseFormattedAnalysis(analysisText);
+    // Parse the formatted text response and add document type and language
+    const analysis = parseFormattedAnalysis(analysisText);
+    analysis.document_type = documentType;
+    analysis.language = language;
+    return analysis;
+}
+
+// Analyze document with Gemini API (legacy function for backward compatibility)
+async function analyzeDocumentWithGemini(base64Data) {
+    // First detect document type
+    const documentType = await detectDocumentType(base64Data);
+    
+    // Use the new function with detected type
+    return await analyzeDocumentWithGeminiWithType(base64Data, documentType);
 }
 
 // Display analysis results
@@ -282,15 +575,19 @@ function displayResults(analysis) {
     // Add enhanced risk breakdown
     addRiskBreakdown(analysis.risk_score);
     
-    // Track risk trends (assuming document type as 'legal_document')
-    trackRiskTrends('legal_document', analysis.risk_score);
+    // Track risk trends using detected document type
+    const docType = analysis.document_type || 'General Legal Document';
+    trackRiskTrends(docType.toLowerCase().replace(/[^a-z0-9]/g, '_'), analysis.risk_score);
     
     // Display key findings
     displayKeyFindings(analysis.key_issues, analysis.red_flags);
     
-    // Display summary
+    // Display summary with document type
+    const documentTypeDisplay = analysis.document_type ? 
+        `<div class="document-type-badge">📄 ${analysis.document_type}</div>` : '';
+    
     document.getElementById('summary-text').innerHTML = 
-        `<p>${analysis.plain_summary}</p>`;
+        `${documentTypeDisplay}<p>${analysis.plain_summary}</p>`;
 }
 
 // Update risk meter visualization
@@ -462,12 +759,99 @@ function addChatMessage(message, sender) {
     chatResponses.scrollTop = chatResponses.scrollHeight;
 }
 
+// Show upload confirmation with file details
+function showUploadConfirmation(file) {
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    
+    // Create simple loading content
+    loading.innerHTML = `
+        <div class="loading-content">
+            <div class="simple-loading">
+                <div class="loading-spinner"></div>
+                <h3>✅ File uploaded: ${file.name} - Preparing for analysis...</h3>
+            </div>
+        </div>
+    `;
+    
+    loading.classList.remove('hidden');
+    results.classList.add('hidden');
+}
+
+// Show document type detection loading
+function showDocumentTypeDetection() {
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    
+    loading.innerHTML = `
+        <div class="loading-content">
+            <div class="simple-loading">
+                <div class="loading-spinner"></div>
+                <h3>🔍 Detecting document type...</h3>
+            </div>
+        </div>
+    `;
+    
+    loading.classList.remove('hidden');
+    results.classList.add('hidden');
+}
+
+// Show document type confirmation
+function showDocumentTypeConfirmation(detectionResult, base64Data) {
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    
+    const documentType = detectionResult.type;
+    const language = detectionResult.language;
+    
+    loading.innerHTML = `
+        <div class="loading-content">
+            <div class="document-type-confirmation">
+                <div class="confirmation-icon">📄</div>
+                <h3>Document Analysis Ready</h3>
+                <div class="detection-results">
+                    <div class="detected-type">
+                        <span class="label">Type:</span>
+                        <span class="value">${documentType}</span>
+                    </div>
+                    <div class="detected-language">
+                        <span class="label">Language:</span>
+                        <span class="value">${language}</span>
+                    </div>
+                </div>
+                <p>Is this correct? We'll use specialized analysis for this document type and language.</p>
+                <div class="confirmation-buttons">
+                    <button id="confirm-type-btn" class="confirm-btn" onclick="proceedWithAnalysis('${documentType}', '${language}', '${base64Data}')">
+                        ✅ Yes, Proceed
+                    </button>
+                    <button id="reject-type-btn" class="reject-btn" onclick="rejectDocumentType()">
+                        ❌ No, Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    loading.classList.remove('hidden');
+    results.classList.add('hidden');
+}
+
 // Show/hide loading animation
 function showLoading(show) {
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
     
     if (show) {
+        // Update loading content for analysis phase
+        loading.innerHTML = `
+            <div class="loading-content">
+                <div class="simple-loading">
+                    <div class="loading-spinner"></div>
+                    <h3>🔍 Detecting document type and analyzing...</h3>
+                </div>
+            </div>
+        `;
+        
         loading.classList.remove('hidden');
         results.classList.add('hidden');
     } else {
@@ -618,7 +1002,8 @@ async function compareDocuments(doc1, doc2) {
     `;
 
     try {
-        const response = await fetch(`${GEMINI_API_URL}?key=${window.GEMINI_API_KEY}`, {
+        const apiKey = window.CONFIG?.GEMINI_API_KEY || window.GEMINI_API_KEY;
+        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -670,7 +1055,8 @@ async function generateNegotiationTips(analysis) {
     `;
     
     try {
-        const response = await fetch(`${GEMINI_API_URL}?key=${window.GEMINI_API_KEY}`, {
+        const apiKey = window.CONFIG?.GEMINI_API_KEY || window.GEMINI_API_KEY;
+        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
