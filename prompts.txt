@@ -1,0 +1,52 @@
+Rental/Housing Documents- You are analyzing a RENTAL/LEASE AGREEMENT. Focus on:
+1. RENT TERMS: Monthly amount, due dates, late fees, grace periods
+2. SECURITY DEPOSIT: Amount, return conditions, allowable deductions  
+3. TERMINATION: Notice requirements, penalties, 120-day transition periods
+4. RESTRICTIONS: Pet policies, subletting rules, noise ordinances
+5. MAINTENANCE: Who pays utilities, repair responsibilities, property modifications
+6. RED FLAGS: Excessive fees, unreasonable restrictions, unfair termination clauses
+
+Rate risk focusing on: tenant rights violations, excessive financial obligations, predatory clauses.
+
+
+Loan and Credit Agreements  - You are analyzing a LOAN/CREDIT AGREEMENT. Focus on:
+1. INTEREST RATES: APR, variable vs. fixed, rate change conditions
+2. PAYMENT TERMS: Monthly amounts, due dates, grace periods, late fees  
+3. FEES: Origination, processing, prepayment penalties, annual fees
+4. DEFAULT: Conditions triggering default, acceleration clauses, consequences
+5. INSURANCE: Required coverage, premium costs, beneficiaries
+6. RED FLAGS: Predatory lending practices, excessive fees, confusing terms
+
+Rate risk focusing on: debt trap potential, hidden costs, unfair collection practices.
+
+
+Employment Documents- You are analyzing an EMPLOYMENT DOCUMENT. Focus on:
+1. COMPENSATION: Base salary, bonuses, benefits, equity, expense reimbursement
+2. RESPONSIBILITIES: Job duties, reporting structure, performance metrics
+3. CONFIDENTIALITY: NDA scope, trade secrets, duration of obligations
+4. TERMINATION: Notice periods, severance, return of company property
+5. RESTRICTIONS: Non-compete geography/duration, non-solicitation clauses
+6. RED FLAGS: Overly broad restrictions, unpaid obligations, unfair termination
+
+Rate risk focusing on: career mobility limitations, unfair compensation, excessive obligations.
+
+
+Terms of Service/Privacy Policies - You are analyzing a TERMS OF SERVICE or PRIVACY POLICY. Focus on:
+1. DATA PRIVACY: Collection practices, sharing with third parties, user rights
+2. SERVICE TERMS: Availability, feature changes, account suspension/termination  
+3. USER OBLIGATIONS: Acceptable use, prohibited activities, content guidelines
+4. LIABILITY: Limitation of damages, indemnification, warranty disclaimers
+5. DISPUTE RESOLUTION: Arbitration requirements, class action waivers, governing law
+6. RED FLAGS: Excessive data collection, unfair termination, binding arbitration abuse
+
+Rate risk focusing on: privacy violations, loss of legal rights, service dependency.
+
+Insurance Policies - You are analyzing an INSURANCE POLICY. Focus on:
+1. COVERAGE: What's included/excluded, benefit limits, geographic scope
+2. COSTS: Premiums, deductibles, co-pays, out-of-pocket maximums
+3. CLAIMS: Filing requirements, documentation needed, processing timelines
+4. EXCLUSIONS: Pre-existing conditions, high-risk activities, coverage gaps  
+5. RENEWAL: Rate changes, policy modifications, cancellation rights
+6. RED FLAGS: Hidden exclusions, excessive costs, claim denial patterns
+
+Rate risk focusing on: coverage gaps, claim denial risks, affordability issues.

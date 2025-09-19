@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalLens AI - Professional Legal Document Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-gavel"></i>
+                <span>LegalLens AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+                <div class="auth-buttons">
+                    <button id="login-btn" class="auth-btn">Login</button>
+                    <button id="signup-btn" class="auth-btn primary">Sign Up</button>
+                    <div id="user-menu" class="user-menu hidden">
+                        <span id="user-email"></span>
+                        <button id="logout-btn" class="auth-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Transform Legal Documents into <span class="highlight">Clear Insights</span></h1>
+                <p class="hero-subtitle">AI-powered legal document analysis that breaks down complex contracts and agreements into plain English, helping you make informed decisions with confidence.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">10,000+</span>
+                        <span class="stat-label">Documents Analyzed</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application -->
+    <main class="main-container">
+        <div class="app-container">
+
+            <!-- Document Upload Section -->
+            <section class="upload-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-upload"></i> Document Analysis</h2>
+                    <p>Upload your legal document to get instant AI-powered insights</p>
+                </div>
+                
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Click to browse and select your PDF</h3>
+                        <p>Supports PDF files up to 10MB</p>
+                        <input type="file" id="pdf-upload" accept=".pdf" class="file-input" />
+                    </div>
+                </div>
+                
+                <div class="analyze-section">
+                    <button class="analyze-btn" id="upload-btn">
+                        <i class="fas fa-search"></i>
+                        Analyze Document
+                    </button>
+                    <p class="analyze-note">Select a PDF file above, then click to analyze</p>
+                </div>
+            </section>
+
+            <!-- Loading Animation -->
+            <div id="loading" class="loading-container hidden">
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <h3>AI is analyzing your document...</h3>
+                    <p>This may take a few moments</p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results-container hidden">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
+                    <p>Comprehensive insights from your legal document</p>
+                    <div class="export-buttons">
+                        <button id="export-pdf-btn" class="export-btn">
+                            <i class="fas fa-file-pdf"></i>
+                            Export PDF Report
+                        </button>
+                        <button id="export-text-btn" class="export-btn">
+                            <i class="fas fa-file-alt"></i>
+                            Export Text Summary
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Risk Score -->
+                <div class="risk-assessment">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-shield-alt"></i> Risk Assessment</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="risk-meter">
+                                <div class="meter-container">
+                                    <div class="meter">
+                                        <div id="risk-bar" class="meter-bar"></div>
+                                    </div>
+                                    <div class="risk-labels">
+                                        <span>Low Risk</span>
+                                        <span>High Risk</span>
+                                    </div>
+                                </div>
+                                <div class="risk-score">
+                                    <span id="risk-text" class="risk-level">Risk Level: Low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Findings -->
+                <div class="key-findings">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Important Clauses</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="findings-list" class="findings-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plain Language Summary -->
+                <div class="summary">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-alt"></i> Plain English Summary</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="summary-text" class="summary-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-tools">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tools"></i> Additional Tools</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="tool-buttons">
+                                <button id="negotiation-btn" class="tool-btn">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Get Negotiation Tips</span>
+                                </button>
+                                <button id="trends-btn" class="tool-btn">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>View Risk Trends</span>
+                                </button>
+                            </div>
+                            <div id="action-results" class="tool-results"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Comparison Section -->
+                <div class="compare-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-balance-scale"></i> Compare Documents</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="compare-interface">
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="compare-upload" accept=".pdf" class="file-input" />
+                                    <label for="compare-upload" class="file-label">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>Select Document to Compare</span>
+                                    </label>
+                                </div>
+                                <button id="compare-btn" class="compare-btn">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    Compare Documents
+                                </button>
+                            </div>
+                            <div id="compare-results" class="compare-results"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Q&A -->
+                <div class="chat-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-comments"></i> Ask Questions</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="chat-interface">
+                                <div class="input-group">
+                                    <input type="text" id="question-input" placeholder="Ask about this document..." class="chat-input" />
+                                    <button id="ask-btn" class="ask-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                                <div id="chat-responses" class="chat-responses"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="analytics-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Analytics Dashboard</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h4 id="total-documents">0</h4>
+                                    <p>Documents Analyzed</p>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h4 id="avg-risk-score">0.0</h4>
+                                    <p>Average Risk Score</p>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h4 id="total-time">0</h4>
+                                    <p>Minutes Saved</p>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h4 id="accuracy-rate">95%</h4>
+                                    <p>Analysis Accuracy</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="analytics-charts">
+                            <div class="chart-container">
+                                <h4>Risk Score Distribution</h4>
+                                <div id="risk-chart" class="chart"></div>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Analysis Trends</h4>
+                                <div id="trends-chart" class="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-gavel"></i>
+                    <span>LegalLens AI</span>
+                </div>
+                <p>&copy; 2024 LegalLens AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Include Firebase and JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="api-keys.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
