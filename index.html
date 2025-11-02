@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegalLens AI - Professional Legal Document Analysis</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -21,6 +21,7 @@
                 <a href="#pricing">Pricing</a>
                 <a href="#contact">Contact</a>
                 <div class="auth-buttons">
+                    <button id="theme-toggle" class="auth-btn" title="Toggle theme"><i class="fas fa-moon"></i></button>
                     <button id="login-btn" class="auth-btn">Login</button>
                     <button id="signup-btn" class="auth-btn primary">Sign Up</button>
                     <div id="user-menu" class="user-menu hidden">
@@ -36,8 +37,16 @@
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h1 class="hero-title">Transform Legal Documents into <span class="highlight">Clear Insights</span></h1>
-                <p class="hero-subtitle">AI-powered legal document analysis that breaks down complex contracts and agreements into plain English, helping you make informed decisions with confidence.</p>
+                <h1 class="hero-title">Comprehensive Legal Document Analysis with <span class="highlight">AI</span></h1>
+                <p class="hero-subtitle">LegalLens AI is a powerful analysis tool that fits into your workflow to help you understand complex contracts, identify risks, and make informed decisions with confidence.</p>
+                <div class="hero-cta">
+                    <button class="cta-btn primary" id="hero-get-started">
+                        <i class="fas fa-rocket"></i> Get started for free
+                    </button>
+                    <button class="cta-btn secondary" id="hero-login">
+                        <i class="fas fa-right-to-bracket"></i> Login
+                    </button>
+                </div>
                 <div class="hero-stats">
                     <div class="stat">
                         <span class="stat-number">10,000+</span>
@@ -53,240 +62,92 @@
                     </div>
                 </div>
             </div>
+            <div class="hero-image">
+                <img src="assets/Screenshot 2025-11-02 120647.png" alt="LegalLens AI Analysis Dashboard" class="product-screenshot" />
+            </div>
         </div>
     </section>
 
-    <!-- Main Application -->
+    <!-- Landing Page Sections -->
     <main class="main-container">
         <div class="app-container">
 
-            <!-- Document Upload Section -->
-            <section class="upload-section">
+            <!-- Features -->
+            <section id="features" class="results-container">
                 <div class="section-header">
-                    <h2><i class="fas fa-file-upload"></i> Document Analysis</h2>
-                    <p>Upload your legal document to get instant AI-powered insights</p>
+                    <h2><i class="fas fa-sparkles"></i> Powerful Features</h2>
+                    <p>Everything you need to understand, compare, and negotiate legal documents with confidence.</p>
                 </div>
-                
-                <div class="upload-area" id="upload-area">
-                    <div class="upload-content">
-                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                        <h3>Click to browse and select your PDF</h3>
-                        <p>Supports PDF files up to 10MB</p>
-                        <input type="file" id="pdf-upload" accept=".pdf" class="file-input" />
-                    </div>
-                </div>
-                
-                <div class="analyze-section">
-                    <button class="analyze-btn" id="upload-btn">
-                        <i class="fas fa-search"></i>
-                        Analyze Document
-                    </button>
-                    <p class="analyze-note">Select a PDF file above, then click to analyze</p>
+                <div class="tool-buttons">
+                    <div class="tool-btn"><i class="fas fa-language"></i><span>Multi Indian Language Analysis</span></div>
+                    <div class="tool-btn"><i class="fas fa-file-circle-check"></i><span>Document type detection</span></div>
+                    <div class="tool-btn"><i class="fas fa-magnifying-glass-chart"></i><span>Risk scoring & insights</span></div>
+                    <div class="tool-btn"><i class="fas fa-scale-balanced"></i><span>Side-by-side comparison</span></div>
+                    <div class="tool-btn"><i class="fas fa-robot"></i><span>Intelligent chatbot for all questions</span></div>
+                    <div class="tool-btn"><i class="fas fa-book"></i><span>Legal term glossary & explanations</span></div>
+                    <div class="tool-btn"><i class="fas fa-share-nodes"></i><span>Share & export analysis</span></div>
+                    <div class="tool-btn"><i class="fas fa-user-tie"></i><span>Connect to real lawyers</span></div>
                 </div>
             </section>
 
-            <!-- Loading Animation -->
-            <div id="loading" class="loading-container hidden">
-                <div class="loading-content">
-                    <div class="loading-spinner"></div>
-                    <h3>AI is analyzing your document...</h3>
-                    <p>This may take a few moments</p>
-                </div>
-            </div>
-
-            <!-- Results Section -->
-            <div id="results" class="results-container hidden">
+            <!-- Pricing -->
+            <section id="pricing" class="results-container">
                 <div class="section-header">
-                    <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
-                    <p>Comprehensive insights from your legal document</p>
-                    <div class="export-buttons">
-                        <button id="export-pdf-btn" class="export-btn">
-                            <i class="fas fa-file-pdf"></i>
-                            Export PDF Report
-                        </button>
-                        <button id="export-text-btn" class="export-btn">
-                            <i class="fas fa-file-alt"></i>
-                            Export Text Summary
-                        </button>
-                    </div>
+                    <h2><i class="fas fa-tags"></i> Simple Pricing</h2>
+                    <p>Start free and upgrade as your needs grow.</p>
                 </div>
-                
-                <!-- Risk Score -->
-                <div class="risk-assessment">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-shield-alt"></i> Risk Assessment</h3>
-                        </div>
+                <div class="tool-buttons">
+                    <div class="card" style="text-align:center; padding:18px;">
+                        <div class="card-header"><h3><i class="fas fa-seedling"></i> Starter</h3></div>
                         <div class="card-content">
-                            <div class="risk-meter">
-                                <div class="meter-container">
-                                    <div class="meter">
-                                        <div id="risk-bar" class="meter-bar"></div>
-                                    </div>
-                                    <div class="risk-labels">
-                                        <span>Low Risk</span>
-                                        <span>High Risk</span>
-                                    </div>
-                                </div>
-                                <div class="risk-score">
-                                    <span id="risk-text" class="risk-level">Risk Level: Low</span>
-                                </div>
-                            </div>
+                            <p>Basic analysis • 5 docs/month</p>
+                            <h3 style="margin-top:10px;">Free</h3>
+                            <button class="analyze-btn" style="margin-top:12px;">Get Started</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Key Findings -->
-                <div class="key-findings">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-exclamation-triangle"></i> Important Clauses</h3>
-                        </div>
+                    <div class="card" style="text-align:center; padding:18px;">
+                        <div class="card-header"><h3><i class="fas fa-star"></i> Pro</h3></div>
                         <div class="card-content">
-                            <div id="findings-list" class="findings-list"></div>
+                            <p>Full analysis • Compare • Unlimited Q&A</p>
+                            <h3 style="margin-top:10px;">$19/mo</h3>
+                            <button class="analyze-btn" style="margin-top:12px;">Upgrade</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Plain Language Summary -->
-                <div class="summary">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-file-alt"></i> Plain English Summary</h3>
-                        </div>
+                    <div class="card" style="text-align:center; padding:18px;">
+                        <div class="card-header"><h3><i class="fas fa-building"></i> Enterprise</h3></div>
                         <div class="card-content">
-                            <div id="summary-text" class="summary-content"></div>
+                            <p>SAML SSO • Admin • Custom workflows</p>
+                            <h3 style="margin-top:10px;">Contact us</h3>
+                            <a href="#contact" class="export-btn" style="display:inline-flex; margin-top:12px;">Talk to Sales</a>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Action Buttons -->
-                <div class="action-tools">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-tools"></i> Additional Tools</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="tool-buttons">
-                                <button id="negotiation-btn" class="tool-btn">
-                                    <i class="fas fa-lightbulb"></i>
-                                    <span>Get Negotiation Tips</span>
-                                </button>
-                                <button id="trends-btn" class="tool-btn">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <span>View Risk Trends</span>
-                                </button>
-                            </div>
-                            <div id="action-results" class="tool-results"></div>
-                        </div>
-                    </div>
+            <!-- Contact -->
+            <section id="contact" class="results-container">
+                <div class="section-header">
+                    <h2><i class="fas fa-envelope-open-text"></i> Contact</h2>
+                    <p>Questions or feedback? We’d love to hear from you.</p>
                 </div>
-
-                <!-- Document Comparison Section -->
-                <div class="compare-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-balance-scale"></i> Compare Documents</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="compare-interface">
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="compare-upload" accept=".pdf" class="file-input" />
-                                    <label for="compare-upload" class="file-label">
-                                        <i class="fas fa-file-pdf"></i>
-                                        <span>Select Document to Compare</span>
-                                    </label>
-                                </div>
-                                <button id="compare-btn" class="compare-btn">
-                                    <i class="fas fa-exchange-alt"></i>
-                                    Compare Documents
-                                </button>
-                            </div>
-                            <div id="compare-results" class="compare-results"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Interactive Q&A -->
-                <div class="chat-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-comments"></i> Ask Questions</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="chat-interface">
-                                <div class="input-group">
-                                    <input type="text" id="question-input" placeholder="Ask about this document..." class="chat-input" />
-                                    <button id="ask-btn" class="ask-btn">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
-                                <div id="chat-responses" class="chat-responses"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Analytics Dashboard -->
-            <div class="analytics-section" style="display: none;">
                 <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-bar"></i> Analytics Dashboard</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="analytics-grid">
-                            <div class="analytics-card">
-                                <div class="analytics-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <div class="analytics-content">
-                                    <h4 id="total-documents">0</h4>
-                                    <p>Documents Analyzed</p>
-                                </div>
-                            </div>
-                            <div class="analytics-card">
-                                <div class="analytics-icon">
-                                    <i class="fas fa-shield-alt"></i>
-                                </div>
-                                <div class="analytics-content">
-                                    <h4 id="avg-risk-score">0.0</h4>
-                                    <p>Average Risk Score</p>
-                                </div>
-                            </div>
-                            <div class="analytics-card">
-                                <div class="analytics-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="analytics-content">
-                                    <h4 id="total-time">0</h4>
-                                    <p>Minutes Saved</p>
-                                </div>
-                            </div>
-                            <div class="analytics-card">
-                                <div class="analytics-icon">
-                                    <i class="fas fa-trophy"></i>
-                                </div>
-                                <div class="analytics-content">
-                                    <h4 id="accuracy-rate">95%</h4>
-                                    <p>Analysis Accuracy</p>
-                                </div>
-                            </div>
+                    <div class="card-content" style="display:grid; gap:12px;">
+                        <div id="contact-success-message" style="display:none; padding:16px; background:#d1fae5; border:1px solid #10b981; border-radius:10px; color:#065f46;">
+                            <i class="fas fa-check-circle"></i> <strong>Thank you for reaching out!</strong> We'll get back to you soon.
                         </div>
-                        <div class="analytics-charts">
-                            <div class="chart-container">
-                                <h4>Risk Score Distribution</h4>
-                                <div id="risk-chart" class="chart"></div>
+                        <div id="contact-form-fields">
+                            <div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-bottom:12px;">
+                                <input id="contact-name" placeholder="Your name" style="padding:12px; border:1px solid #e5e7eb; border-radius:10px;" />
+                                <input id="contact-email" type="email" placeholder="Your email" style="padding:12px; border:1px solid #e5e7eb; border-radius:10px;" />
                             </div>
-                            <div class="chart-container">
-                                <h4>Analysis Trends</h4>
-                                <div id="trends-chart" class="chart"></div>
+                            <textarea id="contact-message" rows="6" placeholder="How can we help?" style="padding:12px; border:1px solid #e5e7eb; border-radius:10px; margin-bottom:12px; font-size:16px; line-height:1.5; width:100%; min-width:100%; resize:vertical;"></textarea>
+                            <div style="display:flex; justify-content:flex-end;">
+                                <button id="contact-send-btn" class="export-btn"><i class="fas fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 
@@ -343,7 +204,7 @@
                         apiKey: "AIzaSyC0jsMw-eaxauMYLvjdzn-mc0_vUPzwnOo",
                         authDomain: "legallens-ai-a2e96.firebaseapp.com",
                         projectId: "legallens-ai-a2e96",
-                        storageBucket: "legallens-ai-a2e96.firebasestorage.app",
+                        storageBucket: "legallens-ai-a2e96.appspot.com",
                         messagingSenderId: "1076383855534",
                         appId: "1:1076383855534:web:c41f79be9c262536c54e3f"
                     };
@@ -373,8 +234,143 @@
             console.log('Running in demo mode without Firebase features');
         }
     </script>
-    
-    <!-- Main Application -->
-    <script src="app.js"></script>
+
+    <!-- Auth redirect + landing login handlers (popup with redirect fallback) -->
+    <script>
+        (function landingAuth() {
+            function redirectIfAuthed() {
+                if (!window.firebaseAuth) { setTimeout(redirectIfAuthed, 200); return; }
+                window.firebaseAuth.onAuthStateChanged(function(user) {
+                    console.log('Auth state (landing):', !!user);
+                    if (user) {
+                        console.log('User authenticated on landing; redirecting to app.html');
+                        window.location.href = 'app.html';
+                    }
+                });
+            }
+            redirectIfAuthed();
+
+            function wireLoginButtons() {
+                const cta = document.getElementById('landing-login-btn');
+                const navLogin = document.getElementById('login-btn');
+                const heroGetStarted = document.getElementById('hero-get-started');
+                const heroLogin = document.getElementById('hero-login');
+                const navSignup = document.getElementById('signup-btn');
+                const start = async () => {
+                    try {
+                        if (!window.firebaseAuth || !window.firebase) {
+                            alert('Authentication not ready. Please try again in a moment.');
+                            return;
+                        }
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        try {
+                            await window.firebaseAuth.signInWithPopup(provider);
+                            console.log('Login success via popup; navigating to app.html');
+                            window.location.href = 'app.html';
+                        } catch (err) {
+                            console.warn('Popup sign-in failed, falling back to redirect:', err && err.code);
+                            await window.firebaseAuth.signInWithRedirect(provider);
+                        }
+                    } catch (e) {
+                        console.error('Login failed:', e);
+                        alert('Login failed. Please try again.');
+                    }
+                };
+                if (cta) cta.addEventListener('click', start);
+                if (navLogin) navLogin.addEventListener('click', start);
+                if (heroGetStarted) heroGetStarted.addEventListener('click', start);
+                if (heroLogin) heroLogin.addEventListener('click', start);
+                if (navSignup) navSignup.addEventListener('click', start);
+            }
+
+            function handleRedirectResult() {
+                if (!window.firebaseAuth) { setTimeout(handleRedirectResult, 200); return; }
+                window.firebaseAuth.getRedirectResult()
+                    .then((result) => {
+                        if (result && result.user) {
+                            console.log('Login success via redirect; navigating to app.html');
+                            window.location.href = 'app.html';
+                        }
+                    })
+                    .catch((e) => {
+                        console.error('Redirect result error:', e);
+                    });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                wireLoginButtons();
+                handleRedirectResult();
+            });
+        })();
+    </script>
+
+    <!-- Theme toggle for landing page -->
+    <script>
+        (function themeInit(){
+            const btn = document.getElementById('theme-toggle');
+            function setTheme(mode){
+                document.documentElement.setAttribute('data-theme', mode);
+                document.body.setAttribute('data-theme', mode);
+                if (btn) btn.innerHTML = mode === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            }
+            try { const saved = localStorage.getItem('ll_theme'); if (saved) setTheme(saved); } catch(e){}
+            if (btn) btn.addEventListener('click', function(){
+                const current = document.documentElement.getAttribute('data-theme') || 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+                setTheme(next); try { localStorage.setItem('ll_theme', next); } catch(e){}
+            });
+        })();
+    </script>
+
+    <!-- Contact form handler -->
+    <script>
+        (function contactFormInit(){
+            document.addEventListener('DOMContentLoaded', function() {
+                const sendBtn = document.getElementById('contact-send-btn');
+                const nameInput = document.getElementById('contact-name');
+                const emailInput = document.getElementById('contact-email');
+                const messageInput = document.getElementById('contact-message');
+                const successMessage = document.getElementById('contact-success-message');
+                const formFields = document.getElementById('contact-form-fields');
+                
+                if (sendBtn) {
+                    sendBtn.addEventListener('click', function() {
+                        const name = nameInput.value.trim();
+                        const email = emailInput.value.trim();
+                        const message = messageInput.value.trim();
+                        
+                        // Basic validation
+                        if (!name || !email || !message) {
+                            alert('Please fill in all fields');
+                            return;
+                        }
+                        
+                        // Email validation
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            alert('Please enter a valid email address');
+                            return;
+                        }
+                        
+                        // Log the contact (in production, send to backend/Firebase)
+                        console.log('Contact form submitted:', { name, email, message });
+                        
+                        // Show success message
+                        formFields.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        
+                        // Reset form after 5 seconds
+                        setTimeout(function() {
+                            nameInput.value = '';
+                            emailInput.value = '';
+                            messageInput.value = '';
+                            formFields.style.display = 'block';
+                            successMessage.style.display = 'none';
+                        }, 5000);
+                    });
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalLens AI - App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .tabs { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+        .tab-btn { padding:8px 12px; border:1px solid #e5e7eb; background:#f8fafc; border-radius:8px; cursor:pointer; font-weight:500; color:#1f2937; }
+        .tab-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+        .hidden-section { display:none !important; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-gavel"></i>
+                <span>LegalLens AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+                <div class="auth-buttons">
+                    <button id="theme-toggle" class="auth-btn" title="Toggle theme"><i class="fas fa-moon"></i></button>
+                    <button id="login-btn" class="auth-btn">Login</button>
+                    <button id="signup-btn" class="auth-btn primary">Sign Up</button>
+                    <div id="user-menu" class="user-menu hidden">
+                        <span id="user-email"></span>
+                        <button id="logout-btn" class="auth-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- App Hero -->
+    <section class="app-hero">
+        <div class="app-hero-container">
+            <div class="app-hero-content">
+                <div class="welcome-badge">
+                    <i class="fas fa-sparkles"></i>
+                    <span>Welcome back</span>
+                </div>
+                <h1 class="app-hero-title">Ready to analyze your next document?</h1>
+                <p class="app-hero-subtitle">Upload any legal document and get instant AI-powered insights, risk assessment, and actionable recommendations.</p>
+            </div>
+            <div class="app-hero-stats">
+                <div class="quick-stat">
+                    <div class="stat-icon success">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="recent-activity">Ready</span>
+                        <span class="stat-label">Status</span>
+                    </div>
+                </div>
+                <div class="quick-stat">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="success-rate">100%</span>
+                        <span class="stat-label">Success Rate</span>
+                    </div>
+                </div>
+                <div class="quick-stat">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="time-saved">0h</span>
+                        <span class="stat-label">Time Saved</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application (copied from existing index.html) -->
+    <main class="main-container">
+        <div class="app-container">
+            <!-- Document Upload Section -->
+            <section class="upload-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-upload"></i> Document Analysis</h2>
+                    <p>Upload your legal document to get instant AI-powered insights</p>
+                </div>
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Click to browse and select your document</h3>
+                        <p>Supported: PDF, DOCX, TXT, MD, PNG, JPG (up to 10MB)</p>
+                        <input type="file" id="pdf-upload" accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg" class="file-input" />
+                    </div>
+                </div>
+                <div class="analyze-section">
+                    <div style="display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:8px;">
+                        <label for="analysis-language" style="color:#6b7280; font-weight:600;">Analysis language:</label>
+                        <select id="analysis-language" style="padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; min-width:220px;">
+                            <option value="auto" selected>Auto-detect (use document language)</option>
+                            <option value="English">English</option>
+                            <option value="Hindi">हिन्दी (Hindi)</option>
+                            <option value="Bengali">বাংলা (Bengali)</option>
+                            <option value="Telugu">తెలుగు (Telugu)</option>
+                            <option value="Marathi">मराठी (Marathi)</option>
+                            <option value="Tamil">தமிழ் (Tamil)</option>
+                            <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+                            <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+                            <option value="Malayalam">മലയാളം (Malayalam)</option>
+                            <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+                            <option value="Odia">ଓଡ଼ିଆ (Odia)</option>
+                            <option value="Urdu">اردو (Urdu)</option>
+                        </select>
+                    </div>
+                    <button class="analyze-btn" id="upload-btn">
+                        <i class="fas fa-search"></i>
+                        Analyze Document
+                    </button>
+                    <p class="analyze-note">Select a file above, then click to analyze</p>
+                </div>
+            </section>
+
+            <!-- Loading Animation -->
+            <div id="loading" class="loading-container hidden">
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <h3>AI is analyzing your document...</h3>
+                    <p>This may take a few moments</p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results-container hidden">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
+                    <div class="tabs" id="results-tabs">
+                        <button class="tab-btn active" data-tab="analysis"><i class="fas fa-chart-simple"></i> Analysis</button>
+                        <button class="tab-btn" data-tab="clauses"><i class="fas fa-list"></i> Clauses</button>
+                        <button class="tab-btn" data-tab="tools"><i class="fas fa-toolbox"></i> Tools</button>
+                        <button class="tab-btn" data-tab="compare"><i class="fas fa-balance-scale"></i> Compare</button>
+                        <button class="tab-btn" data-tab="lawyers"><i class="fas fa-user-tie"></i> Lawyers</button>
+                    </div>
+                    <p>Comprehensive insights from your legal document</p>
+                    <div class="export-buttons">
+                        <button id="export-pdf-btn" class="export-btn">
+                            <i class="fas fa-file-pdf"></i>
+                            Export PDF Report
+                        </button>
+                        <button id="export-text-btn" class="export-btn">
+                            <i class="fas fa-file-alt"></i>
+                            Export Text Summary
+                        </button>
+                        <button id="share-analysis-btn" class="export-btn">
+                            <i class="fas fa-share-nodes"></i>
+                            Share Link
+                        </button>
+                    </div>
+                </div>
+                <div class="risk-assessment" id="section-analysis-1">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-shield-alt"></i> Risk Assessment</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="risk-meter">
+                                <div class="meter-container">
+                                    <div class="meter">
+                                        <div id="risk-bar" class="meter-bar"></div>
+                                    </div>
+                                    <div class="risk-labels">
+                                        <span>Low Risk</span>
+                                        <span>High Risk</span>
+                                    </div>
+                                </div>
+                                <div class="risk-score">
+                                    <span id="risk-text" class="risk-level">Risk Level: Low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-findings" id="section-analysis-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Important Clauses</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="findings-list" class="findings-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary" id="section-analysis-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-alt"></i> Plain English Summary</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="summary-text" class="summary-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-pane Clause Review (skeleton) -->
+                <div class="clause-review" id="section-clauses">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-columns"></i> Clause-by-Clause Review</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="review-pane" style="display:none; gap: 16px; align-items:flex-start;">
+                                <div id="source-viewer" style="flex:1; min-height: 480px; border: 1px solid #eee; border-radius: 8px; overflow: auto; padding: 8px; display:flex; flex-direction:column; align-items:flex-start;">
+                                    <canvas id="pdf-canvas" style="width:100%; display:none;"></canvas>
+                                    <div id="text-source" style="display:none; width:100%; white-space: pre-wrap; text-align:left; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 13px; line-height:1.5;"></div>
+                                </div>
+                                <div id="clause-insights" style="flex:1; min-height: 480px; border: 1px solid #eee; border-radius: 8px; padding: 12px; overflow:auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-tools" id="section-tools">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tools"></i> Additional Tools</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="tool-buttons">
+                                <button id="negotiation-btn" class="tool-btn">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Get Negotiation Tips</span>
+                                </button>
+                                <button id="glossary-btn" class="tool-btn">
+                                    <i class="fas fa-book"></i>
+                                    <span>Explain Legal Terms</span>
+                                </button>
+                            </div>
+                            <div id="action-results" class="tool-results"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compare-section" id="section-compare">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-balance-scale"></i> Compare Documents</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="compare-interface">
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="compare-upload" accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg" class="file-input" />
+                                    <label for="compare-upload" class="file-label">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>Select Document to Compare</span>
+                                    </label>
+                                </div>
+                                <button id="compare-btn" class="compare-btn">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    Compare Documents
+                                </button>
+                            </div>
+                            <div id="compare-results" class="compare-results"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lawyer-help" id="section-lawyers">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-user-tie"></i> Get Expert Help</h3>
+                        </div>
+                        <div class="card-content">
+                            <p>Still confused? Connect to a real lawyer.</p>
+                            <div class="tool-buttons">
+                                <button id="connect-lawyer-btn" class="tool-btn">
+                                    <i class="fas fa-handshake"></i>
+                                    <span>Connect to a real lawyer</span>
+                                </button>
+                            </div>
+                            <div id="lawyer-list" class="findings-list" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-section" style="display:none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-comments"></i> Ask Questions</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="chat-interface">
+                                <div class="input-group">
+                                    <input type="text" id="question-input" placeholder="Ask about this document..." class="chat-input" />
+                                    <button id="ask-btn" class="ask-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                                <div id="chat-responses" class="chat-responses"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Analytics Dashboard (hidden by default, used by app.js updateAnalytics) -->
+    <div class="analytics-section" style="display: none;">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-bar"></i> Analytics Dashboard</h3>
+            </div>
+            <div class="card-content">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4 id="total-documents">0</h4>
+                            <p>Documents Analyzed</p>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4 id="avg-risk-score">0.0</h4>
+                            <p>Average Risk Score</p>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4 id="total-time">0</h4>
+                            <p>Minutes Saved</p>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4 id="accuracy-rate">95%</h4>
+                            <p>Analysis Accuracy</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="analytics-charts">
+                    <div class="chart-container">
+                        <h4>Risk Score Distribution</h4>
+                        <div id="risk-chart" class="chart"></div>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Analysis Trends</h4>
+                        <div id="trends-chart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-gavel"></i>
+                    <span>LegalLens AI</span>
+                </div>
+                <p>&copy; 2024 LegalLens AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase and JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Configuration -->
+    <script src="config.js"></script>
+
+    <!-- Document processing libs -->
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://unpkg.com/tesseract.js@v4.0.2/dist/tesseract.min.js"></script>
+    <!-- PDF.js for source viewer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- LZ-String for compact link-only sharing -->
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+
+    <!-- Firebase Initialization (copied from index) -->
+    <script>
+        let firebaseApp, firebaseAuth, firebaseStorage, firebaseDB;
+        try {
+            if (typeof firebase !== 'undefined') {
+                let firebaseConfig = null;
+                if (window.CONFIG && window.CONFIG.FIREBASE) {
+                    firebaseConfig = window.CONFIG.FIREBASE;
+                } else if (typeof process !== 'undefined' && process.env) {
+                    firebaseConfig = {
+                        apiKey: process.env.FIREBASE_API_KEY,
+                        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+                        projectId: process.env.FIREBASE_PROJECT_ID,
+                        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+                        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+                        appId: process.env.FIREBASE_APP_ID
+                    };
+                } else {
+                    firebaseConfig = {
+                        apiKey: "AIzaSyC0jsMw-eaxauMYLvjdzn-mc0_vUPzwnOo",
+                        authDomain: "legallens-ai-a2e96.firebaseapp.com",
+                        projectId: "legallens-ai-a2e96",
+                        storageBucket: "legallens-ai-a2e96.appspot.com",
+                        messagingSenderId: "1076383855534",
+                        appId: "1:1076383855534:web:c41f79be9c262536c54e3f"
+                    };
+                }
+                if (firebaseConfig && firebaseConfig.apiKey) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    firebaseAuth = firebase.auth();
+                    firebaseStorage = firebase.storage();
+                    firebaseDB = firebase.firestore();
+                    window.firebaseApp = firebaseApp;
+                    window.firebaseAuth = firebaseAuth;
+                    window.firebaseStorage = firebaseStorage;
+                    window.firebaseDB = firebaseDB;
+                    console.log('Firebase initialized successfully (app page)');
+                } else {
+                    console.log('Firebase configuration not found - running in demo mode (app page)');
+                }
+            } else {
+                console.log('Firebase not loaded - running in demo mode (app page)');
+            }
+        } catch (error) {
+            console.log('Firebase initialization failed (app page):', error);
+        }
+    </script>
+
+    <!-- Auth guard for app page -->
+    <script>
+        (function guardApp() {
+            if (!window.firebaseAuth) {
+                console.log('Auth not ready on app page; will check again shortly');
+                setTimeout(guardApp, 300);
+                return;
+            }
+            window.firebaseAuth.onAuthStateChanged(function(user) {
+                console.log('Auth state (app):', !!user);
+                if (!user) {
+                    console.log('No user on app page; redirecting to index.html');
+                    window.location.href = 'index.html';
+                }
+            });
+        })();
+    </script>
+
+    <!-- Main Application -->
+    <script src="app.js"></script>
+
+    <!-- Floating Chat (non-intrusive) -->
+    <div id="floating-chat" style="position:fixed; right:28px; top:50%; transform:translateY(-50%); width:360px; max-width:90vw; height:520px; box-shadow:0 12px 36px rgba(0,0,0,0.18); border:1px solid #dbeafe; border-radius:14px; background:var(--white); display:none; flex-direction:column; z-index:1000;">
+        <div id="floating-chat-header" style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #e9d5ff; background:linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%); color:#7c3aed; border-radius:14px 14px 0 0;">
+            <div style="font-weight:600; display:flex; align-items:center; gap:8px; font-size:16px;"><i class="fas fa-comments"></i> Ask Questions</div>
+            <button id="floating-chat-close" aria-label="Close chat" style="border:none; background:transparent; font-size:20px; cursor:pointer; color:#7c3aed; padding:4px 8px; line-height:1; display:flex; align-items:center; justify-content:center;">✖</button>
+        </div>
+        <div id="floating-chat-messages" style="flex:1; padding:10px; overflow:auto; background:var(--white);">
+            <!-- messages -->
+        </div>
+        <div id="floating-chat-footer" style="padding:10px; border-top:1px solid #dbeafe; display:flex; gap:8px; background:#f8fafc;">
+            <input id="floating-question-input" type="text" placeholder="Ask about this document..." style="flex:1; padding:10px 12px; border:1px solid #bfdbfe; border-radius:10px; outline:none;">
+            <button id="voice-input-btn" title="Voice input" style="padding:10px 12px; border:1px solid #c7d2fe; border-radius:10px; background:#fff; color:#6366f1; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fas fa-microphone"></i></button>
+            <button id="floating-ask-btn" style="padding:10px 14px; border:1px solid #2563eb; border-radius:10px; background:#2563eb; color:#fff; cursor:pointer;">Send</button>
+        </div>
+    </div>
+
+    <button id="floating-chat-toggle" aria-label="Open chat" title="Ask Questions" style="position:fixed; right:28px; top:50%; transform:translateY(-50%); width:68px; height:68px; border-radius:50%; border:none; background:#2563eb; color:#fff; box-shadow:0 10px 28px rgba(37,99,235,0.45); cursor:pointer; z-index:1000; display:none; align-items:center; justify-content:center;">
+        <i class="fas fa-message" style="font-size:22px;"></i>
+    </button>
+</body>
+</html>

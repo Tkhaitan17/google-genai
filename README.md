@@ -2,14 +2,28 @@
 
 AI-powered legal document analysis that breaks down complex contracts and agreements into plain English, helping you make informed decisions with confidence.
 
+## ⚠️ Security Notice for Demo
+
+**This repository includes API keys for hackathon demonstration and judging purposes only.**
+
+- ✅ Keys are rate-limited and monitored
+- ✅ Keys will be rotated immediately after the hackathon
+- ❌ Do NOT use these keys in production
+- ❌ Do NOT abuse the provided keys
+
+**For production deployment, see the Security & Production section below.**
+
 ## 🚀 Features
 
-- **Multi-Language Support**: Analyzes documents in 12+ languages
-- **Document Type Detection**: Automatically identifies document types (Rental, Loan, Employment, etc.)
-- **AI-Powered Analysis**: Uses Google Gemini AI for intelligent document analysis
+- **Multi-Indian Language Support**: Analyzes documents in 10+ Indian languages (Hindi, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Urdu)
+- **20+ Document Types**: Automatically identifies document types (Rental, Loan, Employment, NDA, etc.)
+- **AI-Powered Analysis**: Uses Google Gemini 2.0 Flash for intelligent document analysis
 - **Risk Assessment**: Provides risk scores and identifies potential issues
+- **Clause-by-Clause Review**: Interactive highlighting and detailed analysis
+- **Intelligent Chatbot**: Voice-enabled Q&A with context-aware suggestions
 - **Plain English Summaries**: Converts legal jargon into understandable language
 - **Privacy-First**: Secure document processing with user consent
+- **Dark Mode**: Full dark theme support
 
 ## 🛠️ Setup Instructions
 
@@ -112,34 +126,6 @@ legallens-ai/
 - Insurance Policies
 - General Legal Documents
 
-## 🚀 Deployment
-
-### GitHub Pages
-1. Push your code to GitHub
-2. Go to repository Settings > Pages
-3. Select source branch
-4. Your app will be available at `https://yourusername.github.io/legallens-ai`
-
-### Netlify
-1. Connect your GitHub repository
-2. Set build command: `echo "No build required"`
-3. Set publish directory: `.`
-4. Add environment variables in Netlify dashboard
-
-### Vercel
-1. Import your GitHub repository
-2. Set framework: Other
-3. Add environment variables
-4. Deploy
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -157,3 +143,87 @@ If you encounter any issues:
 - **v1.0.0**: Initial release with multi-language support
 - **v1.1.0**: Added document type detection
 - **v1.2.0**: Enhanced security and privacy features
+- **v1.3.0**: Added intelligent chatbot with voice input
+- **v1.4.0**: Added clause-by-clause review with highlighting
+
+## 🔐 Security & Production Deployment
+
+### Current Demo Architecture
+```
+Browser → Gemini API (direct call with client-side key)
+```
+
+**This is acceptable for:**
+- ✅ Hackathon demonstrations
+- ✅ Local development
+- ✅ Proof of concept
+
+**NOT recommended for:**
+- ❌ Production deployment
+- ❌ Public websites
+- ❌ Commercial use
+
+### Recommended Production Architecture
+```
+Browser → Backend API Proxy → Gemini API
+         (Netlify Functions)   (key hidden on server)
+```
+
+### Production Implementation Steps
+
+**1. Create Netlify Function:**
+```javascript
+// netlify/functions/analyze.js
+exports.handler = async (event) => {
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // Server-side only
+  
+  const response = await fetch(GEMINI_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: event.body
+  });
+  
+  return {
+    statusCode: 200,
+    body: JSON.stringify(await response.json())
+  };
+};
+```
+
+**2. Update Frontend:**
+```javascript
+// Call your function instead of Gemini directly
+const response = await fetch('/.netlify/functions/analyze', {
+  method: 'POST',
+  body: JSON.stringify({ document: base64Data })
+});
+```
+
+**3. Set Environment Variables in Netlify:**
+- Go to: Site Settings → Environment Variables
+- Add: `GEMINI_API_KEY` = your_actual_key
+- Deploy
+
+### Additional Production Recommendations
+
+1. **Rate Limiting**: Implement per-user request throttling
+2. **API Key Rotation**: Regular key rotation schedule
+3. **Monitoring**: Track API usage and costs
+4. **Error Handling**: Graceful degradation for API failures
+5. **Caching**: Cache common queries to reduce API calls
+6. **Input Validation**: Strict file size and type validation
+7. **CORS Configuration**: Restrict to your domain only
+
+## 🏆 Hackathon Submission
+
+This project was created for the Google AI Hackathon 2024.
+
+**Key Highlights:**
+- 🇮🇳 First legal AI tool with 10+ Indian language support
+- 🎤 Voice-enabled chatbot for accessibility
+- 🎨 Interactive clause highlighting
+- 🌙 Full dark mode support
+- 📊 20+ document types supported
+- 🔒 Privacy-first design
