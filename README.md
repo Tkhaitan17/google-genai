@@ -1,6 +1,6 @@
 # LegalLens AI - Professional Legal Document Analysis
 
-AI-powered legal document analysis that breaks down complex contracts and agreements into plain English, helping you make informed decisions with confidence.
+AI-powered legal document analysis that breaks down complex contracts and agreements into plain language (10+), helping you make informed decisions with confidence.
 
 ## ⚠️ Security Notice for Demo
 
@@ -8,10 +8,7 @@ AI-powered legal document analysis that breaks down complex contracts and agreem
 
 - ✅ Keys are rate-limited and monitored
 - ✅ Keys will be rotated immediately after the hackathon
-- ❌ Do NOT use these keys in production
-- ❌ Do NOT abuse the provided keys
 
-**For production deployment, see the Security & Production section below.**
 
 ## 🚀 Features
 
